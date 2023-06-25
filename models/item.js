@@ -1,9 +1,11 @@
-const { model, Schema } = require('mongoose')
+const { model, Schema } = require('mongoose');
 
 const itemSchema = new Schema({
-    title: { type: String, required: true },
-    price: { type: Number, required: true }
-})
-const Item = model('Item', itemSchema)
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true, default: 1 }
+});
 
-module.exports = Item
+const Item = model('Item', itemSchema);
+
+module.exports = Item;
