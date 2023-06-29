@@ -1,4 +1,6 @@
+require('dotenv').config()
 const User = require('../models/user');
+const Cart = require('../models/cart')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -19,11 +21,22 @@ exports.auth = async (req, res, next) => {
 
 exports.createUser = async (req, res) => {
     try {
+        console.log(process.env.JWT_SECRET); // Add this line for debugging
+
         const user = new User(req.body);
+        const cart = new Cart({ user: user._id });
+        await cart.save();
+
+        if (!user) {
+            throw new Error('Failed to create user');
+        }
+
+        user.carts = [cart._id]; // Assign an array with the cart ID
         await user.save();
         const token = await user.generateAuthToken();
         res.json({ user, token });
     } catch (error) {
+        console.log(error);
         res.status(400).json({ message: error.message });
     }
 };
@@ -46,7 +59,7 @@ exports.loginUser = async (req, res) => {
         const token = await user.generateAuthToken();
         res.json({ user, token });
     } catch (error) {
-        req.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 
