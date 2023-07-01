@@ -55,13 +55,14 @@ describe('User Controller', () => {
                 .get('/')
                 .expect(200);
 
-            expect(response.body).toHaveLength(2);
-            expect(response.body[0]).toHaveProperty('_id');
-            expect(response.body[0].name).toBe('User 1');
-            expect(response.body[0].email).toBe('user1@example.com');
-            expect(response.body[1]).toHaveProperty('_id');
-            expect(response.body[1].name).toBe('User 2');
-            expect(response.body[1].email).toBe('user2@example.com');
+            const sortedResponse = response.body.sort((a, b) => a._id.localeCompare(b._id));
+            expect(sortedResponse).toHaveLength(2);
+            expect(sortedResponse[0]).toHaveProperty('_id');
+            expect(sortedResponse[0].name).toBe('User 1');
+            expect(sortedResponse[0].email).toBe('user1@example.com');
+            expect(sortedResponse[1]).toHaveProperty('_id');
+            expect(sortedResponse[1].name).toBe('User 2');
+            expect(sortedResponse[1].email).toBe('user2@example.com');
         });
     });
 
@@ -95,7 +96,7 @@ describe('User Controller', () => {
                 email: 'john@example.com',
                 password: 'password'
             });
-
+            const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
             const response = await request(app)
                 .put(`/${user._id}`)
                 .set('Authorization', `Bearer ${token}`)
@@ -114,12 +115,12 @@ describe('User Controller', () => {
                 const user = await User.create({
                     name: 'John Doe',
                     email: 'john@example.com',
-                    password
+                    password: 'password'
                 });
-
+                const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
                 const response = await request(app)
                     .delete(`/${user._id}`)
-                    .set('Authorization', 'Bearer maks')
+                    .set('Authorization', `Bearer ${token}`)
                     .expect(204);
 
                 const deletedUser = await User.findById(user._id);

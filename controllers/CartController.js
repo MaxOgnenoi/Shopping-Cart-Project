@@ -20,7 +20,7 @@ exports.addItemToCart = async (req, res) => {
         await cart.save();
         res.status(200).json({ message: 'Item added to your cart', cart });
     } catch (error) {
-        res.status(500).json({ message: 'Error adding an item', error });
+        res.status(400).json({ message: 'Error adding an item', error: error.message, stack: error.stack });
     }
 };
 

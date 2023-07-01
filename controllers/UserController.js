@@ -21,8 +21,6 @@ exports.auth = async (req, res, next) => {
 
 exports.createUser = async (req, res) => {
     try {
-        console.log(process.env.JWT_SECRET); // Add this line for debugging
-
         const user = new User(req.body);
         const cart = new Cart({ user: user._id });
         await cart.save();
