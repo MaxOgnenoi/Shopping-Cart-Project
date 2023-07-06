@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-const UserController = require('../controllers/UserController');
-const ItemController = require('../controllers/ItemController');
-const CartController = require('../controllers/CartController');
+const userController = require('../controllers/userController');
+const itemController = require('../controllers/itemController');
+const cartController = require('../controllers/cartController');
 
-router.get('/', UserController.getUser);
-router.post('/', UserController.createUser);
-router.post('/login', UserController.loginUser);
-router.put('/:id', UserController.auth, UserController.updateUser);
-router.delete('/:id', UserController.auth, UserController.deleteUser);
+router.get('/users', userController.getUser);
+router.post('/users', userController.createUser);
+router.post('/users/login', userController.loginUser);
+router.put('/users/:id', userController.auth, userController.updateUser);
+router.delete('/users/:id', userController.auth, userController.deleteUser);
 
-router.post('/carts/:cartId/items/:itemId', CartController.addItemToCart);
-router.delete('/carts/:cartId/items/:itemId', CartController.removeItemFromCart);
-router.get('/carts/:cartId', CartController.getCart);
+router.post('/users/:userId/carts/:cartId/items/:itemId', userController.auth, cartController.addItemToCart);
+router.delete('/users/:userId/carts/:cartId/items/:itemId', userController.auth, cartController.removeItemFromCart);
+router.get('/users/:userId/carts/:cartId', userController.auth, cartController.getCart);
 
-router.post('/items', ItemController.createItem);
-router.get('/items/:itemId', ItemController.getItem);
+router.post('/items', itemController.createItem);
+router.get('/items/:itemId', itemController.getItem);
 
 module.exports = router;

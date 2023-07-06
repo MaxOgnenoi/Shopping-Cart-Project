@@ -29,7 +29,7 @@ exports.createUser = async (req, res) => {
             throw new Error('Failed to create user');
         }
 
-        user.carts = [cart._id]; // Assign an array with the cart ID
+        user.carts = [cart._id]; 
         await user.save();
         const token = await user.generateAuthToken();
         res.json({ user, token });

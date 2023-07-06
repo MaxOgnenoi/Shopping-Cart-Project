@@ -32,7 +32,7 @@ describe('User Controller', () => {
             };
 
             const response = await request(app)
-                .post('/')
+                .post('/users')
                 .send(user)
                 .expect(200);
 
@@ -44,7 +44,7 @@ describe('User Controller', () => {
         });
     });
 
-    describe('GET /', () => {
+    describe('GET /users', () => {
         it('should get all users', async () => {
             await User.create([
                 { name: 'User 1', email: 'user1@example.com', password: 'password' },
@@ -52,7 +52,7 @@ describe('User Controller', () => {
             ]);
 
             const response = await request(app)
-                .get('/')
+                .get('/users')
                 .expect(200);
 
             const sortedResponse = response.body.sort((a, b) => a._id.localeCompare(b._id));
@@ -66,7 +66,7 @@ describe('User Controller', () => {
         });
     });
 
-    describe('POST /login', () => {
+    describe('POST /users/login', () => {
         it('should log in a user', async () => {
             const password = await bcrypt.hash('password', 8);
             const user = await User.create({
@@ -76,7 +76,7 @@ describe('User Controller', () => {
             });
 
             const response = await request(app)
-                .post('/login')
+                .post('/users/login')
                 .send({ email: 'john@example.com', password: 'password' })
                 .expect(200);
 
@@ -88,7 +88,7 @@ describe('User Controller', () => {
         });
     });
 
-    describe('PUT /:id', () => {
+    describe('PUT /users/:id', () => {
         it('should update the current user', async () => {
             const password = await bcrypt.hash('password', 8);
             const user = await User.create({
@@ -98,7 +98,7 @@ describe('User Controller', () => {
             });
             const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
             const response = await request(app)
-                .put(`/${user._id}`)
+                .put(`/users/${user._id}`)
                 .set('Authorization', `Bearer ${token}`)
                 .send({ name: 'Updated User' })
                 .expect(200);
@@ -108,7 +108,7 @@ describe('User Controller', () => {
         });
     });
 
-    describe('DELETE /:id', () => {
+    describe('DELETE /users/:id', () => {
         it('should delete the current user',
             async () => {
                 const password = await bcrypt.hash('password', 8);
@@ -119,7 +119,7 @@ describe('User Controller', () => {
                 });
                 const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
                 const response = await request(app)
-                    .delete(`/${user._id}`)
+                    .delete(`/users/${user._id}`)
                     .set('Authorization', `Bearer ${token}`)
                     .expect(204);
 

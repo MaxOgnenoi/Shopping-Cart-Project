@@ -1,5 +1,6 @@
 const Cart = require('../models/cart');
 const Item = require('../models/item');
+const User = require('../models/user');
 
 exports.addItemToCart = async (req, res) => {
     try {
@@ -18,7 +19,11 @@ exports.addItemToCart = async (req, res) => {
         }
         cart.items.push(item);
         await cart.save();
-        res.status(200).json({ message: 'Item added to your cart', cart });
+
+        const user = req.user; // Access the user from req object
+        const token = await user.generateAuthToken();
+
+        res.status(200).json({ message: 'Item added to your cart', cart, token });
     } catch (error) {
         res.status(400).json({ message: 'Error adding an item', error: error.message, stack: error.stack });
     }
@@ -37,7 +42,11 @@ exports.removeItemFromCart = async (req, res) => {
         }
         cart.items.splice(itemIndex, 1);
         await cart.save();
-        res.status(200).json({ message: 'Item removed from your cart', cart });
+
+        const user = req.user; // Access the user from req object
+        const token = await user.generateAuthToken();
+
+        res.status(200).json({ message: 'Item removed from your cart', cart, token });
     } catch (error) {
         res.status(500).json({ message: 'Error removing an item', error });
     }
@@ -50,7 +59,11 @@ exports.getCart = async (req, res) => {
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        res.status(200).json(cart);
+
+        const user = req.user; // Access the user from req object
+        const token = await user.generateAuthToken();
+
+        res.status(200).json({ cart, token });
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving cart', error });
     }

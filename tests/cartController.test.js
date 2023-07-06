@@ -4,6 +4,7 @@ const Cart = require('../models/cart');
 const Item = require('../models/item');
 const User = require('../models/user');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 describe('Cart Controller', () => {
     beforeAll(async () => {
@@ -23,29 +24,35 @@ describe('Cart Controller', () => {
         await User.deleteMany();
     });
 
-    describe('POST /carts/:cartId/items/:itemId', () => {
+    describe('POST /users/:userId/carts/:cartId/items/:itemId', () => {
         it('should add an item to the cart', async () => {
-            const user = await User.create({
+            user = await User.create({
                 name: 'John Doe',
                 email: 'john.doe@example.com',
                 password: 'password123',
-                carts: []
+                carts: [],
             });
-            
-            const cart = await Cart.create({
+
+            await user.save();
+
+            cart = await Cart.create({
                 user: user._id,
                 items: [],
             });
-            const item = await Item.create({
+            await cart.save()
+
+            item = await Item.create({
                 name: 'Item 1',
                 price: 10,
                 quantity: 1,
             });
+            await item.save()
 
-            
+            const token = await user.generateAuthToken();
 
             const response = await request(app)
-                .post(`/carts/${cart._id}/items/${item._id}`)
+                .post(`/users/${user._id}/carts/${cart._id}/items/${item._id}`)
+                .set('Authorization', `Bearer ${token}`)
                 .expect(200);
 
             expect(response.body).toBeDefined();
@@ -56,30 +63,37 @@ describe('Cart Controller', () => {
             expect(response.body.cart.items[0]._id).toBe(item._id.toString());
         });
 
-
     });
 
-    describe('DELETE /carts/:cartId/items/:itemId', () => {
+    describe('DELETE /users/:userId/carts/:cartId/items/:itemId', () => {
         it('should remove an item from the cart', async () => {
-            const user = await User.create({
+            user = await User.create({
                 name: 'John Doe',
                 email: 'john.doe@example.com',
                 password: 'password123',
+                carts: [],
+            });
+            await user.save();
+
+            cart = await Cart.create({
+                user: user._id,
+                items: [],
             });
 
-            const item = await Item.create({
+            item = await Item.create({
                 name: 'Item 1',
                 price: 10,
-                quantity: 5,
+                quantity: 1,
             });
 
-            const cart = await Cart.create({
-                user: user._id,
-                items: [item._id],
-            });
+            cart.items.push(item);
+            await cart.save();
+
+            const token = await user.generateAuthToken();
 
             const response = await request(app)
-                .delete(`/carts/${cart._id}/items/${item._id}`)
+                .delete(`/users/${user._id}/carts/${cart._id}/items/${item._id}`)
+                .set('Authorization', `Bearer ${token}`)
                 .expect(200);
 
             expect(response.body).toBeDefined();
@@ -89,15 +103,27 @@ describe('Cart Controller', () => {
             expect(response.body.cart.items.length).toBe(0);
         });
 
-
     });
 
-    describe('GET /carts/:cartId', () => {
+    describe('GET /users/:userId/carts/:cartId', () => {
         it('should get the cart with populated items', async () => {
-            const user = await User.create({
+            user = await User.create({
                 name: 'John Doe',
                 email: 'john.doe@example.com',
                 password: 'password123',
+                carts: [],
+            });
+            await user.save();
+
+            cart = await Cart.create({
+                user: user._id,
+                items: [],
+            });
+
+            item = await Item.create({
+                name: 'Item 1',
+                price: 10,
+                quantity: 1,
             });
 
             const item1 = await Item.create({
@@ -112,13 +138,13 @@ describe('Cart Controller', () => {
                 quantity: 3,
             });
 
-            const cart = await Cart.create({
-                user: user._id,
-                items: [item1._id, item2._id],
-            });
+            cart.items.push(item1, item2);
+            await cart.save();
 
+            const token = await user.generateAuthToken();
             const response = await request(app)
-                .get(`/carts/${cart._id}`)
+                .get(`/users/${user._id}/carts/${cart._id}`)
+                .set('Authorization', `Bearer ${token}`)
                 .expect(200);
 
             expect(response.body).toBeDefined();
@@ -128,6 +154,5 @@ describe('Cart Controller', () => {
             expect(response.body.items[1]._id).toBe(item2._id.toString());
         });
 
-
     });
-});
+})
