@@ -249,6 +249,15 @@
     <li><code>404 Not Found</code>: Resource not found.</li>
     <li><code>500 Internal Server Error</code>: Unexpected server error.</li>
   </ul>
+<h2 id="environment-variables">Environment Variables</h2>
+
+<p>The following environment variables are required for the Shopping Cart API:</p>
+<ul>
+  <li><code>MONGODB_URI</code>: The connection URL for your MongoDB database.</li>
+  
+</ul>
+
+<p>Before running the API, make sure to create a <code>.env</code> file in the root directory of the project and set the required environment variables with their respective values.</p>
 
   <h2 id="authentication">Authentication</h2>
 
