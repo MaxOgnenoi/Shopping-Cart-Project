@@ -46,7 +46,8 @@
   <p>The following environment variables are required for the Shopping Cart API:</p>
 <ul>
   <li><code>MONGODB_URI</code>: The connection URL for your MongoDB database.</li>
-  
+  <pre><code>MONGO_URI=mongodb+srv://<your email>:<password>@cluster0.l9momc8.mongodb.net/
+JWT_SECRET=<SECRET></code></pre>
 </ul>
 
 <p>Before running the API, make sure to create a <code>.env</code> file in the root directory of the project and set the required environment variables with their respective values.</p>
@@ -128,7 +129,7 @@
   <h4 id="update-user">Update User</h4>
 
   <p><strong>Endpoint:</strong> <code>/users/:userId</code></p>
-  <p><strong>Method:</strong> PATCH</p>
+  <p><strong>Method:</strong> PUT</p>
 
   <p>Update user information.</p>
 
