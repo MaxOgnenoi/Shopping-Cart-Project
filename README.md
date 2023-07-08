@@ -41,6 +41,14 @@
 
   <p>To use the Shopping Cart API, you will need to have Node.js installed on your machine. Clone the repository and install the dependencies using <code>npm install</code>. Start the server with <code>npm start</code>.</p>
 
+  <p>The following environment variables are required for the Shopping Cart API:</p>
+<ul>
+  <li><code>MONGODB_URI</code>: The connection URL for your MongoDB database.</li>
+  
+</ul>
+
+<p>Before running the API, make sure to create a <code>.env</code> file in the root directory of the project and set the required environment variables with their respective values.</p>
+
   <p>The API will be accessible at <code>http://localhost:3000</code>.</p>
 
   <h2 id="endpoints">Endpoints</h2>
@@ -251,13 +259,6 @@
   </ul>
 <h2 id="environment-variables">Environment Variables</h2>
 
-<p>The following environment variables are required for the Shopping Cart API:</p>
-<ul>
-  <li><code>MONGODB_URI</code>: The connection URL for your MongoDB database.</li>
-  
-</ul>
-
-<p>Before running the API, make sure to create a <code>.env</code> file in the root directory of the project and set the required environment variables with their respective values.</p>
 
   <h2 id="authentication">Authentication</h2>
 
